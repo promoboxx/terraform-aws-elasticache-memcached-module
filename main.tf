@@ -14,7 +14,7 @@ resource "aws_elasticache_cluster" "memcached" {
   maintenance_window           = "${var.memcached_maintenance_window}"
   port                         = "${var.memcached_port}"
   az_mode                      = "${var.memcached_clusters == 1 ? "single-az" : "cross-az" }"
-  preferred_availability_zones = ["${slice(var.availability_zones, 0, var.memcached_clusters)}"]
+  preferred_availability_zones = slice(var.availability_zones, 0, var.memcached_clusters)
   tags                         = "${merge(map("Name","tf-elasticache-${var.name}-${data.aws_vpc.vpc.tags["Name"]}"), var.tags)}"
 }
 
@@ -24,10 +24,12 @@ resource "aws_elasticache_parameter_group" "memcached_parameter_group" {
 
   # Strip the patch version from memcached_version var
   family    = "memcached${replace(var.memcached_version, "/\\.[\\d]+$/","")}"
-  parameter = "${var.memcached_parameters}"
+  # parameter { 
+  #   var.memcached_parameters
+  # }
 }
 
 resource "aws_elasticache_subnet_group" "memcached_subnet_group" {
   name       = "${replace(format("%.255s", lower(replace("tf-memcached-${var.name}-${var.env}-${data.aws_vpc.vpc.tags["Name"]}", "_", "-"))), "/\\s/", "-")}"
-  subnet_ids = ["${var.subnets}"]
+  subnet_ids = var.subnets
 }

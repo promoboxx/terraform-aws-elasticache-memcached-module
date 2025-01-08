@@ -37,7 +37,7 @@ variable "memcached_port" {
 }
 
 variable "subnets" {
-  type        = "list"
+  type        = list(string)
   description = "List of VPC Subnet IDs for the cache subnet group"
 }
 
@@ -62,7 +62,7 @@ variable "memcached_maintenance_window" {
 }
 
 variable "availability_zones" {
-  type        = "list"
+  type        = list(string)
   description = "List of the Availability Zones in which cache nodes are create"
 }
 

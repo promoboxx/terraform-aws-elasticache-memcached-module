@@ -3,7 +3,7 @@ resource "aws_security_group" "memcached_security_group" {
   description = "Terraform-managed ElastiCache security group for ${var.name}-${var.env}-${data.aws_vpc.vpc.tags["Name"]}"
   vpc_id      = "${data.aws_vpc.vpc.id}"
 
-  tags {
+  tags = {
     Name = "tf-sg-ec-${var.name}-${var.env}-${data.aws_vpc.vpc.tags["Name"]}"
   }
 }
@@ -23,6 +23,6 @@ resource "aws_security_group_rule" "memcached_networks_ingress" {
   from_port         = "${var.memcached_port}"
   to_port           = "${var.memcached_port}"
   protocol          = "tcp"
-  cidr_blocks       = ["${var.allowed_cidr}"]
+  cidr_blocks       = "${var.allowed_cidr}"
   security_group_id = "${aws_security_group.memcached_security_group.id}"
 }
